@@ -1,18 +1,28 @@
 import React, { Component } from 'react';
 import './App.css';
+import * as fetchListing from './api'
 import { Card, CardTitle, CardText, Grid, Cell, Content } from 'react-mdl';
 import Switch from 'react-toggle-switch';
 
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+
+    state = {
       items: [],
       workers: [],
-      loading: true,
+      loading: false,
       switched: false
     };
+
+  async componentDidMount() {
+    const items = await fetchListing.fetchListing1();
+    const workers = await fetchListing.fetchListing2();
+    this.setState({
+      items: items,
+      workers: workers
+    })
+      console.log(items, workers)
+      this.sortApi();
   }
 
   toggleSwitch = () => {
@@ -22,36 +32,6 @@ class App extends Component {
       };
     });
   };
-
-  componentDidMount() {
-    this.fetchListing();
-    // this.sortApi();
-  }
-
-  fetchListing = () => {
-    fetch('https://www.hatchways.io/api/assessment/work_orders')
-    .then(res => res.json())
-    .then(json => {
-      this.setState({
-        loading: false,
-        items: json.orders
-      })
-      console.log(this.state.items);      
-    })
-    .catch(err => {
-      console.error(err)
-    })
-
-    fetch('https://www.hatchways.io/api/assessment/workers/0')
-    .then(res => res.json())
-    .then(json => {
-      this.setState({
-        loading: false,
-        workers: json.worker
-      });
-      console.log(this.state.workers);
-    });
-  }
 
   sortApi() {
     let itemsJSON = this.state.items;
@@ -63,7 +43,7 @@ class App extends Component {
 
   render() {
     const { loading, items, workers } = this.state;
-    this.sortApi();
+    // this.sortApi();
     if (loading) {
       return <div>Loading...</div>;
     }
