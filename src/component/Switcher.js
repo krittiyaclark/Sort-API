@@ -1,67 +1,59 @@
 import React, { Component } from 'react';
 import '../App.css';
-import * as fetchListing from './api'
-import Switch from 'react-toggle-switch';
+// import * as fetchListing from './api';
+// import Layout from './component/Layout';
+import { Switch } from 'react-mdl';
 
-class SwitchSort extends Component {
 
-    state = {
-        items: [],
-        workers: [],
-        loading: false,
-        switched: false,
-        display: "recent"
+class Switcher extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isToggleOn: false,
+      asc: []
+    };
+
+    this.handleClick = this.handleClick.bind(this);
+    this.sortAscApi =  this.sortAscApi.bind(this);
+
     }
 
-  async componentDidMount() {
-    const items = await fetchListing.fetchListing1();
-    const workers = await fetchListing.fetchListing2();
+    handleClick() {
+      this.setState(state => ({
+        isToggleOn: !state.isToggleOn
+      }));
+    }
 
-    this.setState({
-        items: items,
-        workers: workers
-    })
-      console.log(items, workers)
+  
+  sortAscApi() {
+    let asc = this.props.orders;
+     this.setState(state => ({
+      // asc.sort((a, b) => Number(a.deadline) - Number(b.deadline));
+      // console.log("ascending", asc);
+      // return asc
+    }))
+    console.log("ascending", asc);
+    
   }
 
-    // toggleSwitch = (evt) => {
-    //     evt.preventDefault();
 
-    //     this.setState(prevState => {
-    //         return {
-    //         switched: !prevState.switched
-    //         };
-    //     });
-    // };
-     
-  // sortAscendingApi() => {
-  //   const items = await fetchListing.fetchListing1();
-  //   const workers = await fetchListing.fetchListing2();
-
-  //   itemsJSON.sort((a, b) => Number(a.deadline) - Number(b.deadline));
-  //     console.log("ascending", itemsJSON);
-  //     return itemsJSON;
-  // }
-
-  // sortDescendingApi() {
+  // sortDescApi() {
   //   let itemsJSON = this.state.items;
 
   //   itemsJSON.sort((a, b) => Number(b.deadline) - Number(a.deadline));
   //     console.log("descending", itemsJSON);
   //     return itemsJSON;
   // }
-      render() {
-    const { loading } = this.state;
-
-        if (loading) {
-            return <div>Loading...</div>;
-          }
+    render() {
         return (
             <div>
-                <Switch onClick={this.toggleSwitch} on={this.state.switched} />
+                <Switch 
+                        onClick={this.handleClick}
+                > {this.state.isToggleOn ? 'ON' : 'OFF'}
+                </Switch>
             </div>
         );
       }
 }
 
-export default SwitchSort;
+export default Switcher;

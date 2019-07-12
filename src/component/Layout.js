@@ -2,47 +2,41 @@ import React, { Component } from 'react';
 import '../App.css';
 import * as fetchListing from '../api'
 import { Card, CardTitle, CardText, Grid, Cell, Content } from 'react-mdl';
-import Switch from 'react-toggle-switch';
-
+import Switcher from './Switcher';
 
 class Layout extends Component {
-
-    state = {
-      items: [],
+  constructor(props) {
+    super(props);
+    this.state = {
+      orders: [],
       workers: [],
       loading: false,
       switched: false
     };
-
+  }
+  
   async componentDidMount() {
-    const items = await fetchListing.fetchListing1();
-    const workers = await fetchListing.fetchListing2();
+    const orders = await fetchListing.fetchListingOrders();
+    const workers = await fetchListing.fetchListingWorkers();
     this.setState({
-      items: items,
+      orders: orders,
       workers: workers
     })
-      console.log(items, workers)
-      this.sortApi();
+      console.log(orders, workers)
+      // this.sortApi();
   }
 
-  toggleSwitch = () => {
-    this.setState(prevState => {
-      return {
-        switched: !prevState.switched
-      };
-    });
-  };
+  // sortApi() {
+  //   let ordersJSON = this.state.orders;
 
-  sortApi() {
-    let itemsJSON = this.state.items;
+  //   ordersJSON.sort((a, b) => Number(a.deadline) - Number(b.deadline));
+  //     console.log("ascending", ordersJSON);
+  //     return ordersJSON;
+  // }
 
-    itemsJSON.sort((a, b) => Number(a.deadline) - Number(b.deadline));
-      console.log("ascending", itemsJSON);
-      return itemsJSON;
-  }
 
   render() {
-    const { loading, items, workers } = this.state;
+    const { loading, orders, workers } = this.state;
     // this.sortApi();
     if (loading) {
       return <div>Loading...</div>;
@@ -53,9 +47,9 @@ class Layout extends Component {
         <Content>
         <Grid className="demo-grid-1">
           <Cell col={12}>              
-                <Switch onClick={this.toggleSwitch} on={this.state.switched} />
+                <Switcher />
           </Cell>                      
-          {items.map(item => (
+          {orders.map(item => (
             <Cell col={4} key={item.id}>              
             <div className="page-content">
 

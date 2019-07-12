@@ -1,11 +1,11 @@
-export const fetchListing1 = () => {
+export const fetchListingOrders = () => {
     return new Promise(function(resolve, reject) {
         fetch('https://www.hatchways.io/api/assessment/work_orders')
         .then(res => res.json())
         .then(json => {
-            let items = json.orders
-            console.log(items); 
-            resolve(items);
+            let orders = json.orders
+            console.log(orders); 
+            resolve(orders);
         })
         .catch(err => {
         console.error(reject())
@@ -13,7 +13,7 @@ export const fetchListing1 = () => {
     })
 }
 
-export const fetchListing2 = () => {
+export const fetchListingWorkers = () => {
         return new Promise(function(resolve, reject) {
         fetch('https://www.hatchways.io/api/assessment/workers/0')
         .then(res => res.json())
