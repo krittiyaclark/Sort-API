@@ -11,7 +11,7 @@ class Layout extends Component {
     super(props);
     this.state = {
       orders: [],
-      workers: [],
+      workers: {},
       ascs: '',
       dscs: '',
       loading: false,
@@ -37,7 +37,7 @@ class Layout extends Component {
     })
       console.log(ordersApi, workersApi)
       this.sortAscApi()
-      this.sortDscApi()
+      // this.sortDscApi()
   }
 
 
@@ -48,10 +48,16 @@ class Layout extends Component {
   // }
   
   toggleSwitch = () => {
-    this.setState(prevState => {
-      return {
-        switched: !prevState.switched
-      };
+    this.setState({
+      switched: !this.state.switched
+    }, () => {
+      // called after the swtiched state is updated
+      const { switched } = this.state;
+      if(switched){
+        this.sortDscApi();
+      }else{
+        this.sortAscApi();
+      }
     });
   };
 
@@ -97,7 +103,7 @@ class Layout extends Component {
           {/* <button onClick={this.sortDscApi} on={this.state.isToggleOn}>Click</button> */}
           </Cell>                  
           {orders.map(item => (
-            <Cell col={4} key={item.id}>              
+            <Cell col={6} key={item.id}>              
             <div className="page-content">
 
               <Card shadow={0} style={{ margin: 'auto' }}>
