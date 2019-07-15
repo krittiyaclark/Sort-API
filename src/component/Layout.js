@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import '../App.css';
 import * as fetchListing from '../api'
 import { Card, CardTitle, CardText, Grid, Cell, Content } from 'react-mdl';
-import Switcher from './Switcher';
+import Switch from 'react-toggle-switch';
+// import SliderApp from './SliderApp';
+
 
 class Layout extends Component {
   constructor(props) {
@@ -10,45 +12,90 @@ class Layout extends Component {
     this.state = {
       orders: [],
       workers: [],
+      ascs: '',
+      dscs: '',
       loading: false,
+      isToggleOn: false,
       switched: false
     };
-  }
+
+    this.sortAscApi =  this.sortAscApi.bind(this);
+    this.sortDscApi =  this.sortDscApi.bind(this);
+    // this.handleClick = this.handleClick.bind(this);
+        
+    }
   
   async componentDidMount() {
-    const orders = await fetchListing.fetchListingOrders();
-    const workers = await fetchListing.fetchListingWorkers();
+    const ordersApi = await fetchListing.fetchListingOrders();
+    const workersApi = await fetchListing.fetchListingWorkers();
+    // const { orders, workers } = this.state;
+
+    ordersApi.map(i => i)
     this.setState({
-      orders: orders,
-      workers: workers
+      orders: ordersApi,
+      workers: workersApi
     })
-      console.log(orders, workers)
-      // this.sortApi();
+      console.log(ordersApi, workersApi)
+      this.sortAscApi()
+      this.sortDscApi()
   }
 
-  // sortApi() {
-  //   let ordersJSON = this.state.orders;
 
-  //   ordersJSON.sort((a, b) => Number(a.deadline) - Number(b.deadline));
-  //     console.log("ascending", ordersJSON);
-  //     return ordersJSON;
+  // handleClick() {
+  //   this.setState(prevState => ({
+  //     isToggleOn: !prevState.isToggleOn
+  //   }));
   // }
+  
+  toggleSwitch = () => {
+    this.setState(prevState => {
+      return {
+        switched: !prevState.switched
+      };
+    });
+  };
 
+  sortAscApi() {
+    const { orders, } = this.state;
+    console.log("ascending", orders);
+    let ascs = orders.sort((a, b) => Number(a.deadline) - Number(b.deadline));
+    
+    this.setState({  ascs })
+      console.log("ascending", ascs);
+      // return ascs
+  }
+
+  sortDscApi() {
+    const { orders } = this.state;
+    let dscs = orders.sort((a, b) => Number(b.deadline) - Number(a.deadline));
+    this.setState({ dscs })
+      console.log("dscsending", dscs);
+      // return orders
+  }
 
   render() {
     const { loading, orders, workers } = this.state;
-    // this.sortApi();
+    let sort;
+
+    console.log("ascending", this.state.ascs);
     if (loading) {
       return <div>Loading...</div>;
     }
+    // if (this.state.isToggleOn) {
+    //   sort = this.sortAscApi();
+    // } else {
+    //   sort = this.sortDscApi();
+    // }
+    
     return (
       <div style={{ width: '80%', margin: 'auto' }}>
         <h1>Work Orders</h1>
         <Content>
         <Grid className="demo-grid-1">
           <Cell col={12}>              
-                <Switcher />
-          </Cell>                      
+          <Switch onClick={this.toggleSwitch} on={this.state.switched} />
+          {/* <button onClick={this.sortDscApi} on={this.state.isToggleOn}>Click</button> */}
+          </Cell>                  
           {orders.map(item => (
             <Cell col={4} key={item.id}>              
             <div className="page-content">
@@ -58,8 +105,8 @@ class Layout extends Component {
                   Name : {item.name}
                 </CardTitle>
                 <CardText>
-                    <p><strong>Description:</strong> {item.description}</p>
-                    <p><strong>Deadline:</strong> {item.deadline}</p>
+                    <p><strong>Description:</strong>{item.description}</p>
+                    <p><strong>Deadline:</strong> {sort} {item.deadline}</p>
                     <p><strong>CompanyName</strong> {workers.companyName}</p>
                     <p><strong>Email</strong> {workers.email}</p>
                     <p><strong></strong><img src={workers.image} alt="avatar" /></p>
