@@ -5,24 +5,41 @@ class Search extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            searchName: [],
-            searchTerm: []
+            query: ''
         }
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+
       }
       
-      SearchHandler = (e) => {
+      handleChange(e) {
         this.setState({
-          workersFilter: e.target.value
-        })
+            query:  e.target.value
+        });
       }
       
+      handleSubmit(e) {
+          e.preventDefault();
+          this.props.searchHandler(this.state);
+          this.setState({
+            query: ''
+          })
+        // console.log(this.props)
+      }
+
       render() {
         return (
           <div>
+          <form onSubmit={this.handleSubmit}>
             <label htmlFor="filter">Filter by Worker: </label>
-            <input type="text" id="filter" 
-              value={this.state.workersFilter} 
-              onChange={this.searchHandler}/>
+            <input 
+                type="text" 
+                id="filter" 
+                value={this.state.query} 
+                onChange={this.handleChange}/>
+            </form>
+            <button>Search</button>
           </div>
           )
       }

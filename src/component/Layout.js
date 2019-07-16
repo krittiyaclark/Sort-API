@@ -14,14 +14,13 @@ class Layout extends Component {
       ascs: '',
       dscs: '',
       loading: false,
-      switched: false,      
-      searchName: [],
-      searchTerm: []
+      switched: false,
+      query: ''
     };
 
     this.sortAscApi =  this.sortAscApi.bind(this);
     this.sortDscApi =  this.sortDscApi.bind(this);
-    this.handleOnChange = this.handleOnChange.bind(this);
+    this.searchHandler = this.searchHandler.bind(this);
         
     }
   
@@ -31,8 +30,7 @@ class Layout extends Component {
     // const filterWorker = workersApi.filter()
     this.setState({
       orders: ordersApi,
-      workers: workersApi,
-      searchName: []
+      workers: workersApi
     })
       console.log(ordersApi, workersApi)
       this.sortAscApi()
@@ -53,30 +51,35 @@ class Layout extends Component {
     });
   };
 
- handleOnChange = async e => {
-   let workersApi = this.state.workers;
-   if(e.target.value === '') {
-     return this.setState({
-      searchTerm: e.target.value,
-      searchName: []
-     })
-   }
-   this.setState({ searchTerm: e.target.value });
-   const workers = workersApi.slice();
-   let search = await fetchListing.fetchListingWorkers().search(e.target.value);
-
-   if (!!search && !search.error) {
-     search.map(searchName => {
-       return workers.filter(name => name.id === searchName.id).map(name => {
-         searchName.name = name.name;
-         return  this.setState({ searchedBooks: search });
-       })
-     })
-     this.setState({ searchName: search });
-   } else {
-    this.setState({ searchName: [] });
-   }
+  searchHandler(s) {
+    this.setState({
+      // query:  this.state.query.filter(workers => workers.name !== name)
+    })
   }
+  // searchHandler = async e => {
+  //  let workersApi = this.state.workers;
+  //  if(e.target.value === '') {
+  //    return this.setState({
+  //     searchTerm: e.target.value,
+  //     searchName: []
+  //    })
+  //  }
+  //  this.setState({ searchTerm: e.target.value });
+  //  const workers = workersApi.slice();
+  //  let search = await fetchListing.fetchListingWorkers().search(e.target.value);
+
+  //  if (!!search && !search.error) {
+  //    search.map(searchName => {
+  //      return workers.filter(name => name.id === searchName.id).map(name => {
+  //        searchName.name = name.name;
+  //        return  this.setState({ searchedBooks: search });
+  //      })
+  //    })
+  //    this.setState({ searchName: search });
+  //  } else {
+  //   this.setState({ searchName: [] });
+  //  }
+  // }
 
   sortAscApi() {
     const { orders, } = this.state;
@@ -107,7 +110,7 @@ class Layout extends Component {
         <Content>
         <Grid className="demo-grid-1">
         <Cell col={12}>              
-          <Search on={this.handleOnChange} />
+          <Search search={this.searchHandler} />
           </Cell>   
           <Cell col={12}>              
           <Switch onClick={this.toggleSwitch} on={this.state.switched} />
