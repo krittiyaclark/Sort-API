@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import * as fetchListing from '../api'
 import { Card, CardTitle, CardText, Grid, Cell, Content } from 'react-mdl';
 import Switch from 'react-toggle-switch';
-import Seach from './SearchBar';
+import Search from './SearchBar';
 
 
 class Layout extends Component {
@@ -14,7 +14,7 @@ class Layout extends Component {
       ascs: '',
       dscs: '',
       loading: false,
-      switched: false,
+      switched: false,      
       searchName: [],
       searchTerm: []
     };
@@ -47,7 +47,7 @@ class Layout extends Component {
       const { switched } = this.state;
       if(switched){
         this.sortDscApi();
-      }else{
+      } else {
         this.sortAscApi();
       }
     });
@@ -107,10 +107,10 @@ class Layout extends Component {
         <Content>
         <Grid className="demo-grid-1">
         <Cell col={12}>              
-          <Seach on={this.handleOnChange} />
+          <Search on={this.handleOnChange} />
           </Cell>   
           <Cell col={12}>              
-          <Switch onClick={this.toggleSwitch} onChange={this.state.switched} />
+          <Switch onClick={this.toggleSwitch} on={this.state.switched} />
           </Cell>                  
           {orders.map(item => (
             <Cell col={6} key={item.id}>              
