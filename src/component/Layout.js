@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import '../App.css';
 import * as fetchListing from '../api'
 import { Card, CardTitle, CardText, Grid, Cell, Content } from 'react-mdl';
 import Switch from 'react-toggle-switch';
-// import SliderApp from './SliderApp';
+import Seach from './SearchBar';
 
 
 class Layout extends Component {
@@ -15,38 +14,31 @@ class Layout extends Component {
       ascs: '',
       dscs: '',
       loading: false,
-      isToggleOn: false,
-      switched: false
+      switched: false,
+      searchName: [],
+      searchTerm: []
     };
 
     this.sortAscApi =  this.sortAscApi.bind(this);
     this.sortDscApi =  this.sortDscApi.bind(this);
-    // this.handleClick = this.handleClick.bind(this);
+    this.handleOnChange = this.handleOnChange.bind(this);
         
     }
   
   async componentDidMount() {
     const ordersApi = await fetchListing.fetchListingOrders();
     const workersApi = await fetchListing.fetchListingWorkers();
-    // const { orders, workers } = this.state;
-
-    ordersApi.map(i => i)
+    // const filterWorker = workersApi.filter()
     this.setState({
       orders: ordersApi,
-      workers: workersApi
+      workers: workersApi,
+      searchName: []
     })
       console.log(ordersApi, workersApi)
       this.sortAscApi()
-      // this.sortDscApi()
   }
 
-
-  // handleClick() {
-  //   this.setState(prevState => ({
-  //     isToggleOn: !prevState.isToggleOn
-  //   }));
-  // }
-  
+ 
   toggleSwitch = () => {
     this.setState({
       switched: !this.state.switched
@@ -61,6 +53,31 @@ class Layout extends Component {
     });
   };
 
+ handleOnChange = async e => {
+   let workersApi = this.state.workers;
+   if(e.target.value === '') {
+     return this.setState({
+      searchTerm: e.target.value,
+      searchName: []
+     })
+   }
+   this.setState({ searchTerm: e.target.value });
+   const workers = workersApi.slice();
+   let search = await fetchListing.fetchListingWorkers().search(e.target.value);
+
+   if (!!search && !search.error) {
+     search.map(searchName => {
+       return workers.filter(name => name.id === searchName.id).map(name => {
+         searchName.name = name.name;
+         return  this.setState({ searchedBooks: search });
+       })
+     })
+     this.setState({ searchName: search });
+   } else {
+    this.setState({ searchName: [] });
+   }
+  }
+
   sortAscApi() {
     const { orders, } = this.state;
     console.log("ascending", orders);
@@ -68,7 +85,6 @@ class Layout extends Component {
     
     this.setState({  ascs })
       console.log("ascending", ascs);
-      // return ascs
   }
 
   sortDscApi() {
@@ -76,31 +92,25 @@ class Layout extends Component {
     let dscs = orders.sort((a, b) => Number(b.deadline) - Number(a.deadline));
     this.setState({ dscs })
       console.log("dscsending", dscs);
-      // return orders
   }
 
   render() {
     const { loading, orders, workers } = this.state;
-    let sort;
 
-    console.log("ascending", this.state.ascs);
     if (loading) {
       return <div>Loading...</div>;
     }
-    // if (this.state.isToggleOn) {
-    //   sort = this.sortAscApi();
-    // } else {
-    //   sort = this.sortDscApi();
-    // }
-    
+
     return (
       <div style={{ width: '80%', margin: 'auto' }}>
         <h1>Work Orders</h1>
         <Content>
         <Grid className="demo-grid-1">
+        <Cell col={12}>              
+          <Seach on={this.handleOnChange} />
+          </Cell>   
           <Cell col={12}>              
-          <Switch onClick={this.toggleSwitch} on={this.state.switched} />
-          {/* <button onClick={this.sortDscApi} on={this.state.isToggleOn}>Click</button> */}
+          <Switch onClick={this.toggleSwitch} onChange={this.state.switched} />
           </Cell>                  
           {orders.map(item => (
             <Cell col={6} key={item.id}>              
@@ -112,7 +122,7 @@ class Layout extends Component {
                 </CardTitle>
                 <CardText>
                     <p><strong>Description:</strong>{item.description}</p>
-                    <p><strong>Deadline:</strong> {sort} {item.deadline}</p>
+                    <p><strong>Deadline:</strong>{item.deadline}</p>
                     <p><strong>CompanyName</strong> {workers.companyName}</p>
                     <p><strong>Email</strong> {workers.email}</p>
                     <p><strong></strong><img src={workers.image} alt="avatar" /></p>

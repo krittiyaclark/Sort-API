@@ -1,23 +1,36 @@
 import React, { Component } from 'react';
 import '../App.css';
-// import * as fetchListing from './api';
-// import Layout from './Layout';
-import Slider from 'react-input-slider';
+import Switch from 'react-toggle-switch';
 
 class SliderApp extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      switched: false
+    };
+    
+  toggleSwitch = () => {
+    this.setState({
+      switched: !this.state.switched
+    }, () => {
+      // called after the swtiched state is updated
+      const { switched } = this.state;
+      if(switched){
+        this.sortDscApi();
+      }else{
+        this.sortAscApi();
+      }
+    });
+  };
+
+}
   render() {
-  const [state, setState] = useState({ x: 10, y: 10 });
  
 
   return (
-    <div>
-    <Layout>
-    console.log(this.props.sortAscApi)
-      {this.state.sortAscApi}
-    </Layout>
-      ({state.x}, {state.y})
-      <Slider axis="xy" x={state.x} y={state.y} onChange={setState} />
-    </div>
+    <>
+    <Switch onClick={this.toggleSwitch} on={this.state.switched} />
+</>
   );
 }
 }
