@@ -15,7 +15,7 @@ class Search extends Component {
       
       handleChange(e) {
         this.setState({
-            query:  e.target.value
+            query: e.target.value
         });
       }
       
@@ -31,15 +31,17 @@ class Search extends Component {
       render() {
         return (
           <div>
-          <form onSubmit={this.handleSubmit}>
-            <label htmlFor="filter">Filter by Worker: </label>
+          {/* <form onSubmit={this.handleSubmit}> */}
+            <label htmlFor="filter">Filter by Worker name: </label>
             <input 
                 type="text" 
                 id="filter" 
                 value={this.state.query} 
-                onChange={this.handleChange}/>
-            </form>
-            <button>Search</button>
+                onChange={this.handleChange}
+                placeholder="Search worker name"
+                />
+            {/* </form> */}
+            {/* <button>Search</button> */}
           </div>
           )
       }

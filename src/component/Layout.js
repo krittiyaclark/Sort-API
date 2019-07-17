@@ -33,7 +33,8 @@ class Layout extends Component {
       workers: workersApi
     })
       console.log(ordersApi, workersApi)
-      this.sortAscApi()
+      this.sortAscApi();
+      // this.searchHandler();
   }
 
  
@@ -51,35 +52,37 @@ class Layout extends Component {
     });
   };
 
-  searchHandler(s) {
-    this.setState({
-      // query:  this.state.query.filter(workers => workers.name !== name)
-    })
-  }
-  // searchHandler = async e => {
-  //  let workersApi = this.state.workers;
-  //  if(e.target.value === '') {
-  //    return this.setState({
-  //     searchTerm: e.target.value,
-  //     searchName: []
-  //    })
-  //  }
-  //  this.setState({ searchTerm: e.target.value });
-  //  const workers = workersApi.slice();
-  //  let search = await fetchListing.fetchListingWorkers().search(e.target.value);
-
-  //  if (!!search && !search.error) {
-  //    search.map(searchName => {
-  //      return workers.filter(name => name.id === searchName.id).map(name => {
-  //        searchName.name = name.name;
-  //        return  this.setState({ searchedBooks: search });
-  //      })
-  //    })
-  //    this.setState({ searchName: search });
-  //  } else {
-  //   this.setState({ searchName: [] });
-  //  }
+  // searchHandler(e) {
+  //   console.log(this.state.workers.name)
+  //   this.setState({
+  //     query: this.state.workers.name.filter(worker => worker.name !== name)
+  //   })
   // }
+  searchHandler = async ({ target: { value, name, e } }) => {
+   let workersApi = this.state.workers;
+   if(e.target.value === '') {
+     return this.setState({
+      query: e.target.value,
+      [name]: value
+     })
+   }
+   this.setState({ query: e.target.value });
+   const workers = workersApi.slice();
+   let queryInput = this.state.query;
+   let search = await fetchListing.fetchListingWorkers().search(queryInput);
+
+   if (!!search && !search.error) {
+     search.map(query => {
+       return workers.filter(name => name.id === query.id).map(name => {
+         query.name = name.name;
+         return  this.setState({ query: search });
+       })
+     })
+     this.setState({ query: search });
+   } else {
+    this.setState({ query: [] });
+   }
+  }
 
   sortAscApi() {
     const { orders, } = this.state;
@@ -110,7 +113,7 @@ class Layout extends Component {
         <Content>
         <Grid className="demo-grid-1">
         <Cell col={12}>              
-          <Search search={this.searchHandler} />
+          <Search onChange={this.searchHandler} />
           </Cell>   
           <Cell col={12}>              
           <Switch onClick={this.toggleSwitch} on={this.state.switched} />
