@@ -21,7 +21,7 @@ class Search extends Component {
       
       handleSubmit(e) {
           e.preventDefault();
-          this.props.searchHandler(this.state);
+          this.props.onChange(this.state.query);
           this.setState({
             query: ''
           })
@@ -31,7 +31,7 @@ class Search extends Component {
       render() {
         return (
           <div>
-          {/* <form onSubmit={this.handleSubmit}> */}
+          <form onSubmit={this.handleSubmit}>
             <label htmlFor="filter">Filter by Worker name: </label>
             <input 
                 type="text" 
@@ -40,7 +40,11 @@ class Search extends Component {
                 onChange={this.handleChange}
                 placeholder="Search worker name"
                 />
-            {/* </form> */}
+            <input
+              type="submit"
+              value="Submit" 
+            />
+            </form>
             {/* <button>Search</button> */}
           </div>
           )

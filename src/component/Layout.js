@@ -52,33 +52,22 @@ class Layout extends Component {
     });
   };
 
-  // searchHandler(e) {
-  //   console.log(this.state.workers.name)
-  //   this.setState({
-  //     query: this.state.workers.name.filter(worker => worker.name !== name)
-  //   })
-  // }
-  searchHandler = async ({ target: { value, name, e } }) => {
+  searchHandler = async (query) => {
    let workersApi = this.state.workers;
-   if(e.target.value === '') {
-     return this.setState({
-      query: e.target.value,
-      [name]: value
-     })
-   }
-   this.setState({ query: e.target.value });
-   const workers = workersApi.slice();
-   let queryInput = this.state.query;
-   let search = await fetchListing.fetchListingWorkers().search(queryInput);
+   
+   let search = await fetchListing.fetchListingWorkers(query);
 
    if (!!search && !search.error) {
-     search.map(query => {
-       return workers.filter(name => name.id === query.id).map(name => {
-         query.name = name.name;
-         return  this.setState({ query: search });
-       })
-     })
-     this.setState({ query: search });
+    //  search.map(query => {
+    //    return workers.filter(name => name.id === query.id).map(name => {
+    //      query.name = name.name;
+    //      return  this.setState({ query: search });
+    //    })
+    //  })
+    //  this.setState({ query: search });
+    this.setState({
+      workers: search
+    })
    } else {
     this.setState({ query: [] });
    }
